@@ -1,8 +1,9 @@
 MAT1 EQU 20h
 MAT2 EQU 28h
+ADJCOUNT EQU 30h
 
 INIT:
-	MOV	20h, #00000001b
+	MOV	20h, #01000100b
 	MOV	21h, #00000010b
 	MOV	22h, #00110010b
 	MOV	23h, #10000000b
@@ -13,9 +14,10 @@ INIT:
 
 START:
     ACALL COPY
+    ACALL STEP
 
-END:
-    AJMP END
+STOP:
+    AJMP STOP
 
 COPY:
     ACALL CALCBASEADDRESS
@@ -53,12 +55,38 @@ COPY:
     INC R1
     MOV A, @R0
     MOV @R1, A
-    INC R0
-    INC R1
     RET
 
 STEP:
-    
+    MOV A, #64
+    MOV R0, #ADJCOUNT
+CLEARADJ:
+    MOV @R0, #00h
+    DEC A
+    INC R0
+    JNZ CLEARADJ
+
+    MOV A, #ADJCOUNT
+    ADD A, #0Bh
+    MOV R0, A
+    JB 0Bh, STEP01
+    DEC R0
+    INC @R0
+    INC R0
+    INC R0
+    INC @R0
+    MOV A, R0
+    ADD A, #07h
+    MOV R0, A
+    INC @R0
+    MOV A, R0
+    SUBB A, #10h
+    MOV R0, A
+    INC @R0
+    ADD A, #08
+    MOV R0, A
+STEP01:
+    RET
 
 CALCBASEADDRESS:
     MOV A, #MAT2
