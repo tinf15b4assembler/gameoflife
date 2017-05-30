@@ -1,0 +1,70 @@
+MAT1 EQU 20h
+MAT2 EQU 28h
+
+INIT:
+	MOV	20h, #00000001b
+	MOV	21h, #00000010b
+	MOV	22h, #00110010b
+	MOV	23h, #10000000b
+	MOV	24h, #01101010b
+	MOV	25h, #00000010b
+	MOV	26h, #00000000b
+	MOV	27h, #01100010b
+
+START:
+    ACALL COPY
+
+END:
+    AJMP END
+
+COPY:
+    ACALL CALCBASEADDRESS
+    MOV R0, A
+    CPL F0
+    ACALL CALCBASEADDRESS
+    MOV R1, A
+    MOV A, @R0
+    MOV @R1, A
+    INC R0
+    INC R1
+    MOV A, @R0
+    MOV @R1, A
+    INC R0
+    INC R1
+    MOV A, @R0
+    MOV @R1, A
+    INC R0
+    INC R1
+    MOV A, @R0
+    MOV @R1, A
+    INC R0
+    INC R1
+    MOV A, @R0
+    MOV @R1, A
+    INC R0
+    INC R1
+    MOV A, @R0
+    MOV @R1, A
+    INC R0
+    INC R1
+    MOV A, @R0
+    MOV @R1, A
+    INC R0
+    INC R1
+    MOV A, @R0
+    MOV @R1, A
+    INC R0
+    INC R1
+    RET
+
+STEP:
+    
+
+CALCBASEADDRESS:
+    MOV A, #MAT2
+    JB F0, CALCBASEADDRESS1
+    MOV A, #MAT1
+CALCBASEADDRESS1:
+    RET
+
+END
