@@ -1,6 +1,6 @@
 MAT1 EQU 20h
 MAT2 EQU 28h
-ADJCOUNT EQU 30h
+ADJCOUNT EQU 38h
 
 INIT:
 	MOV	20h, #01000100b
@@ -66,26 +66,46 @@ CLEARADJ:
     INC R0
     JNZ CLEARADJ
 
-    MOV A, #ADJCOUNT
-    ADD A, #0Bh
-    MOV R0, A
-    JB 0Bh, STEP01
+    MOV R2, #64
+    MOV R0, #ADJCOUNT
+STEPLOOP:
+    MOV A, R0
+    SUBB A, #ADJCOUNT
+    ANL A, #00000111b
+    JZ STEP01
     DEC R0
     INC @R0
     INC R0
+STEP01:
+    MOV A, R0
+    SUBB A, #08h
+    MOV B, R0
+    MOV R0, A
+    INC @R0
+    MOV R0, B
+STEP02:
+    MOV A, R0
+    SUBB A, #ADJCOUNT
+    ANL A, #00000111b
+    INC A
+    ANL A, #00000111b
+    JZ STEP03
     INC R0
     INC @R0
+    DEC R0
+STEP03:
     MOV A, R0
-    ADD A, #07h
+    ADD A, #08h
+    MOV B, R0
     MOV R0, A
     INC @R0
-    MOV A, R0
-    SUBB A, #10h
-    MOV R0, A
-    INC @R0
-    ADD A, #08
-    MOV R0, A
-STEP01:
+    MOV R0, B
+STEPEND:
+    DEC R2
+    INC R0
+    MOV A, R2
+    JNZ STEPLOOP
+STEPRET:
     RET
 
 CALCBASEADDRESS:
